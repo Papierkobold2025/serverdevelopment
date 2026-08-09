@@ -1,8 +1,8 @@
 # Docker
 
-- Programa para deployment de contenedores
+- Application for thee deployment of Docker Containers
 
-- Normalización mediante docker compose dentro del directorio /srv/servicio
+- Standardization of the deployment of docker compose through the /srv/service directory (/srv/portainer/compose.yaml for example)
 
 ## Runbook
 
@@ -20,6 +20,6 @@ echo \
 
 sudo apt update
 sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-sudo usermod -aG docker $USER ##Consideración importante: ya no requiere sudo para correr docker, pero equivale a acceso root en el host (desde un contenedor se puede montar y manipular el filesystem completo)
-newgrp docker ##Para aplicar cambios
+sudo usermod -aG docker $USER ##Important consideration: The command does not require sudo to run afterwards, which is equal to root access on the host (Through the container it's possible mounting and manipulating the complete filesystem)
+newgrp docker ##To apply changes
 ```
