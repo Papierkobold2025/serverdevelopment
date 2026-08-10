@@ -36,7 +36,8 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | Pi-hole | VM | [Pihole](docs/pihole.md) |
 | Vaultwarden | VM | [Vaultwarden](docs/vaultwarden.md) |
 | Keycloak | LXC | [Keycloak](docs/keycloak.md) |
-| K3s (lightweight cluster) | VM | [K3s](docs/k3s.md) — hosts Portainer, Semaphore, Zabbix, and Homarr |
+| K3s (lightweight cluster) | VM | [K3s](docs/k3s.md) — hosts Portainer, Semaphore and Homarr |
+| Netdata (New Monitoring Panel) | Panel | [Netdata](docs/netdata.md) |
 | Backups (PBS) | Dedicated VM | [cluster/backup.md](cluster/backup.md) |
 
 ## Automation and Infrastructure as Code
@@ -58,7 +59,6 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 
 ## Roadmap / Pending items
 
-- [ ] Configuration of alerts with Zabbix to a Telegram endpoint
 - [ ] Configuration of firewall in K3s
 - [ ] Configuration of firewall in Proxmox
 - [ ] Expansion of automation tasks in Semaphore, Terraform, and Linux cron jobs
@@ -80,6 +80,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
     - [Watchtower (historical)](Archive/Services/watchtower.md)
     - [Portainer (migrated)](Archive/Services/portainer.md)
     - [Netbird (historical)](Archive/Services/netbird.md)
+    - [Zabbix (historical)](Archive/Services/zabbix.md)
 
 ## Quick reference index
 
