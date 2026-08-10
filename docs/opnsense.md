@@ -20,7 +20,6 @@
   - NPM
   - Nextcloud (proxied only, see Decisions)
 - Pi-hole was not migrated because it acts as the DHCP server for the flat network and must keep scope over all clients.
-- Netbird was not migrated because the orchestrator for access outside the local network is more accessible from the flat network.
 - OPNsense was also not migrated because it is the communication point between the VLAN and the flat network.
 - Rule-by-rule hardening completed for: wg-easy, Portainer, NPM, Semaphore, admin SSH. ANY-ANY fallback rules on LAN and VLAN30 have been removed.
 
