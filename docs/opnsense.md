@@ -18,7 +18,7 @@
 
 - The selected services for migration are infrastructure services, not end-user services.
 
-- Migration of services to the VLAN:
+- Migration of services to VLAN:
 
   - Vaultwarden
 
@@ -28,7 +28,9 @@
 
   - NPM
 
-  - Nextcloud (proxied only, see Decisions)
+  - Nextcloud
+
+  - Immich
 
 - Pi-hole was not migrated because it acts as the DHCP server for the flat network and must keep scope over all clients.
 
@@ -64,7 +66,7 @@
 
 - TCP 2226 → NPM, source restricted to admin IP
 
-- TCP 22 → k3s, source restricted to admin IP
+- TCP → k3s, SSH restricted by IP to access administration
 
 - TCP 8443 → This Firewall, source LAN network (OPNsense webUI direct)
 
@@ -82,7 +84,13 @@
 
 - k3s → each Proxmox node, TCP 22 (Semaphore/Ansible)
 
-- k3s → Nextcloud, TCP 9001
+**VLAN → VLAN:**
+
+- Nextcloud → Keycloak, any port (Covers OAUTH Login through keycloak) 
+
+- k3s (Portainer, VLAN30) → Nextcloud VM (VLAN40), TCP 9001 (Portainer agent connection)
+
+- NPM (VLAN30) → VLAN40, any port (same broad-access pattern as NPM → LAN, see Decisions — NPM already has high blast radius, restricting by host doesn't reduce that)
 
 **Application layer (NPM Access Lists):**
 
@@ -102,7 +110,7 @@
 
 ## Decisions
 
-- Network segmentation only with a single VLAN, to isolate critical services without segmenting by service.
+- Network segmentation started with a single VLAN (VLAN30, infrastructure services). A second VLAN (VLAN40) was later added to isolate Nextcloud and Immich specifically — user-facing storage services with a large blast radius (many containers, direct internet exposure for Nextcloud) — away from infrastructure-critical services like Vaultwarden and Keycloak.
 
 - I decided to place the reverse proxy inside the VLAN; internal DNS queries pass through Pi-hole and are forwarded to NPM, while OPNsense acts as the bridge to return the resolution to the client.
 
@@ -124,6 +132,8 @@
 
 - NPM Access Lists reconsidered and implemented for all Proxy Hosts except Nextcloud (previously discarded as "not worth it for this project" — reversed after confirming the actual exposure, see Issues encountered). Rule of thumb going forward: any new Proxy Host defaults to an `internal-only` Access List (LAN + VLAN); Publicly Accessible is an explicit, deliberate exception, not a default.
 
+- Nextcloud and Immich were isolated in a separate VLAN in order to restrict the access tothe rest of infrastructure to avoid lateral movement to critical services.
+
 ### Issues encountered
 
 - Rules are evaluated by the interface where the packet *enters* OPNsense, not the logical direction. Traffic leaving VLAN toward the internet enters through the VLAN interface, not WAN. Mistake made: put the GitHub outbound rule on WAN instead of VLAN.
@@ -137,3 +147,5 @@
 - OPNsense webUI Listen Interfaces was set to "All", so the webUI itself listened on WAN even though no firewall rule allowed reaching it — port 80 leaked an identifiable `Server: OPNsense` banner to a plain port scan. Fixed by restricting to LAN + VLAN. Caution: wrong interface choice can lock out the webUI; rollback via OPNsense VM console through Proxmox. Brief self-resolving interruption observed right after applying (service restart).
 
 - WGLAN clients cannot reach VLAN services. ICMP from inside the Pi-hole/wg-easy VM never reaches OPNsense at all (100% packet loss before the firewall), ruling out an OPNsense rule as the cause. MTU and systemd-resolved ruled out as differentiators from the working WGVLAN tunnel. Root cause not yet resolved — investigation points to something inside the Pi-hole/wg-easy VM itself, not OPNsense. Not blocking in practice: VLAN access is intentionally treated as the higher-trust tunnel (WGVLAN), while WGLAN is scoped to the flat network only.
+
+- ICMP being blocked is not the same as a service being down. During VLAN40 hardening (Nextcloud), `ping` to the VLAN gateway failed while the actual service (HTTPS via NPM) worked fine — OPNsense only had an explicit ALLOW for the service's real port, not for ICMP, since it follows the rule-by-rule hardening pattern (no ANY-ANY fallback). Lesson: when troubleshooting connectivity during hardening, test the actual service port/protocol directly (curl, telnet) instead of relying on ping — a failed ping does not confirm a broken firewall rule for the traffic that actually matters.

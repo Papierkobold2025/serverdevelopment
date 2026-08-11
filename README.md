@@ -12,7 +12,7 @@ Personal infrastructure (homelab) documented — a technical portfolio based on 
 
 ## General architecture (summary)
 
-Infrastructure designed around **service isolation** to reduce the attack surface and limit lateral movement. The topology includes a flat network plane and a VLAN hosting infrastructure services, with OPNSense acting as the bridge/firewall between planes.
+Infrastructure designed around **service isolation** to reduce the attack surface and limit lateral movement. The topology includes a flat network plane and a VLANs hosting infrastructure services, with OPNSense acting as the bridge/firewall between planes.
 
 ### Cluster nodes
 
@@ -24,6 +24,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | **Nextcloud-sec** | Hypervisor for High Availability and replication |
 | **i5** | Hypervisor for replication and non-critical services |
 | **PBS** | Daily backups of all nodes and their VMs/containers |
+| **Datacenter** | Node for Immich service |
 
 📄 Complete hardware specifications in [cluster/nodes.md](cluster/nodes.md)
 
@@ -39,6 +40,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | K3s (lightweight cluster) | VM | [K3s](docs/k3s.md) — hosts Portainer, Semaphore and Homarr |
 | Netdata (New Monitoring Panel) | Panel | [Netdata](docs/netdata.md) |
 | Backups (PBS) | Dedicated VM | [cluster/backup.md](cluster/backup.md) |
+| Immich (Datacenter) | VM | [Immich](docs/immich.md) |
 
 ## Automation and Infrastructure as Code
 
@@ -53,9 +55,9 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 
 | Tool | Purpose | Documentation |
 |---|---|---|
-| OPNSense | Firewall/router for the VLAN and flat network | [OPNSense](docs/opnsense.md) |
+| OPNSense | Firewall/router for the VLANs and flat network | [OPNSense](docs/opnsense.md) |
 | K3s | Firewall inside the K3s cluster | [K3s](docs/k3s.md#network-policies) |
-| wg-easy | VPN for accessing the flat network and VLAN | [wg-easy](docs/wg-easy.md) |
+| wg-easy | VPN for accessing the flat network and VLANs | [wg-easy](docs/wg-easy.md) |
 
 ## Roadmap / Pending items
 
@@ -69,7 +71,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 
 ## Current status / In progress
 
-> 🚧 **Network segmentation in progress.** A VLAN has been created and part of the infrastructure is being migrated; the rules in OPNSense and the DNS validations are still under development. Details and runbooks in [Network segmentation](docs/opnsense.md).
+> 🚧 **Network segmentation in progress.** A VLANs has been created and part of the infrastructure is being migrated; the rules in OPNSense and the DNS validations are still under development. Details and runbooks in [Network segmentation](docs/opnsense.md).
 
 ## Archived documentation index
 
