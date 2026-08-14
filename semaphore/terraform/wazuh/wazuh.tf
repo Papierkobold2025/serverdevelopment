@@ -1,7 +1,7 @@
 resource "proxmox_virtual_environment_vm" "wazuh_vm" {
   description = "Managed by Terraform"
 
-  node_name = "i5"
+  node_name = "hipvervisori5"
   vm_id     = 113
   name      = "wazuh"
 
