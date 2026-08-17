@@ -1,5 +1,5 @@
 - name: Docker installation and deployment of service directory
-  hosts: conatiner         # The group/host where Docker will be installed
+  hosts: container         # The group/host where Docker will be installed
   become: true                # Is the equivallent of sudo during execution of commands
 
   vars:
