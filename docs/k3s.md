@@ -32,7 +32,7 @@ curl -sfL https://get.k3s.io | sh -
 
 - Deny-all isolation pattern by namespace, with traffic opened selectively through allow rules.
 
-- The current rules allow traffic to and from the full flat network range (`192.168.1.0/24`) for Portainer and its agent, instead of restricting it to specific IPs — the same initial risk-acceptance approach used in the general network segmentation (see [opnsense](opnsense.md)), pending hardening (see Roadmap: "K3s firewall configuration").
+- The current rules allow traffic to and from the full flat network range (`192.168.X.X/24`) for Portainer and its agent, instead of restricting it to specific IPs — the same initial risk-acceptance approach used in the general network segmentation (see [opnsense](opnsense.md)), pending hardening (see Roadmap: "K3s firewall configuration").
 
 ### Issues encountered
 
@@ -50,7 +50,7 @@ curl -sfL https://get.k3s.io | sh -
 |---|---|
 | Portainer | [portainer.yaml](../k3s/manifests/deployment/automation/portainer.yaml) |
 | Semaphore | [semaphore.yaml](../k3s/manifests/deployment/automation/semaphore.yaml) |
-| Zabbix | [docs/zabbix.md](../docs/zabbix.md) (Helm chart) |
+| Zabbix | [docs/zabbix.md](../Archive/Services/zabbix.md) (Helm chart) |
 | Homarr | [homarr.yaml](../k3s/manifests/deployment/monitoring/homarr.yaml) |
 
 ### Network Policy Rules

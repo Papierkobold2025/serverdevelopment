@@ -6,9 +6,10 @@ Personal infrastructure (homelab) documented — a technical portfolio based on 
 
 ## Quick overview
 
-- Stack: Proxmox · K3s · OPNSense · Nginx Proxy Manager · Pi-hole · Keycloak · Vaultwarden · wg-easy
+- Stack: Proxmox · K3s · Keycloak · Vaultwarden · wg-easy · Immich · Pterodaktyl 
+- Network: Nginx Proxy Manager · Pi-hole · Wazuh · OPNSense
 - IaC / Automation: Terraform · Ansible · Semaphore · Portainer
-- Observability: Homarr · Zabbix
+- Observability: Homarr
 
 ## General architecture (summary)
 
