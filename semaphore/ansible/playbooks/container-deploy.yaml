@@ -1,45 +1,45 @@
-- name: Instalar Docker y preparar carpeta de servicio
-  hosts: containers          # el grupo/host del inventario donde vas a instalar Docker
-  become: true                # equivalente a poner "sudo" delante de cada tarea
+- name: Docker installation and deployment of service directory
+  hosts: vms          # The group/host where Docker will be installed
+  become: true                # Is the equivallent of sudo during execution of commands
 
   vars:
-    servicio: "portainer"       # cambias esto por cada servicio nuevo
+    service: "wazuh"       # Is changes in each run
 
   tasks:
-    - name: Actualizar índice de paquetes
+    - name: Update all package index
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Instalar dependencias base
+    - name: Install base dependencies
       ansible.builtin.apt:
         name:
           - ca-certificates
           - curl
         state: present
 
-    - name: Crear carpeta para las llaves de apt
+    - name: Create directory for apt keys
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
         mode: '0755'
 
-    - name: Descargar la llave GPG de Docker
+    - name: Download the Docker GPG key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
         mode: '0644'
 
-    - name: Agregar el repositorio de Docker
+    - name: Add the Docker repository
       ansible.builtin.apt_repository:
         repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
         state: present
         filename: docker
 
-    - name: Actualizar índice otra vez (ya con el repo de Docker)
+    - name: Update Index again (Now with the Docker repository)
       ansible.builtin.apt:
         update_cache: yes
 
-    - name: Instalar Docker y sus plugins
+    - name: Install Docker and Plugins
       ansible.builtin.apt:
         name:
           - docker-ce
@@ -49,8 +49,8 @@
           - docker-compose-plugin
         state: present
 
-    - name: Crear carpeta del servicio en /srv
+    - name: Create service directory in /srv
       ansible.builtin.file:
-        path: "/srv/{{ servicio }}"
+        path: "/srv/{{ service }}"
         state: directory
         mode: '0755'
