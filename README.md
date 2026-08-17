@@ -41,6 +41,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | Netdata (New Monitoring Panel) | Panel | [Netdata](docs/netdata.md) |
 | Backups (PBS) | Dedicated VM | [cluster/backup.md](cluster/backup.md) |
 | Immich (Datacenter) | VM | [Immich](docs/immich.md) |
+| Wazuh | VM | [Wazuh](docs/wazuh.md) |
 
 ## Automation and Infrastructure as Code
 
@@ -61,12 +62,12 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 
 ## Roadmap / Pending items
 
-- [ ] Configuration of firewall in K3s
+- [x] Configuration of firewall in K3s
 - [ ] Configuration of firewall in Proxmox
 - [ ] Expansion of automation tasks in Semaphore, Terraform, and Linux cron jobs
 - [ ] Cloudflare Access as an extra layer for exposed services (Keycloak)
 - [ ] ntopng — visibility into network traffic
-- [ ] Wazuh — SIEM, centralization of security logs
+- [x] Wazuh — SIEM, centralization of security logs
 - [ ] HA / multi-node replication of k3s
 
 ## Current status / In progress
