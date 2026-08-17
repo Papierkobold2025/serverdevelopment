@@ -1,9 +1,9 @@
 - name: Docker installation and deployment of service directory
-  hosts: vms          # The group/host where Docker will be installed
+  hosts: conatiner         # The group/host where Docker will be installed
   become: true                # Is the equivallent of sudo during execution of commands
 
   vars:
-    service: "wazuh"       # Is changes in each run
+    service: "portainer"       # Is changes in each run
 
   tasks:
     - name: Update all package index
@@ -54,3 +54,9 @@
         path: "/srv/{{ service }}"
         state: directory
         mode: '0755'
+    
+    - name: Add SSH user to docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
