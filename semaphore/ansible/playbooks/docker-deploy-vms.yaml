@@ -1,0 +1,62 @@
+- name: Docker installation and deployment of service directory
+  hosts: vm        # The group/host where Docker will be installed
+  become: true                # Is the equivallent of sudo during execution of commands
+
+  vars:
+    service: "wazuh"       # Is changes in each run
+
+  tasks:
+    - name: Update all package index
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install base dependencies
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+
+    - name: Create directory for apt keys
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
+    - name: Download the Docker GPG key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+
+    - name: Add the Docker repository
+      ansible.builtin.apt_repository:
+        repo: "deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        state: present
+        filename: docker
+
+    - name: Update Index again (Now with the Docker repository)
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Docker and Plugins
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: Create service directory in /srv
+      ansible.builtin.file:
+        path: "/srv/{{ service }}"
+        state: directory
+        mode: '0755'
+    
+    - name: Add SSH user to docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
