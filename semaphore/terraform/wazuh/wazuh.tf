@@ -1,8 +1,8 @@
 resource "proxmox_virtual_environment_vm" "wazuh_vm" {
   description = "Managed by Terraform"
 
-  node_name = "hipervisori5"
-  vm_id     = 113
+  node_name = "hipervisori5" #Has to be identical to the name in Proxmox
+  vm_id     = 113 #ID and name have to be unique, as it will fail if it finds a duplicate in the cluster
   name      = "wazuh"
 
   clone {
@@ -19,8 +19,8 @@ resource "proxmox_virtual_environment_vm" "wazuh_vm" {
 
     ip_config {
       ipv4 {
-        address = "192.168.1.142/24"
-        gateway = "192.168.1.101"
+        address = "192.168.X.X/24" #IP address of the new VM
+        gateway = "192.168.X.X"
       }
     }
 
@@ -112,7 +112,7 @@ variable "proxmox_api_token" {
 }
 
 provider "proxmox" {
-  endpoint  = "https://192.168.1.147:8006/"
+  endpoint  = "https://192.168.X.X:8006/" #Hipervisor where the VM will be installed
   api_token = var.proxmox_api_token
   insecure  = true
 
