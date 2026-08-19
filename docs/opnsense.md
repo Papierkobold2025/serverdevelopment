@@ -44,73 +44,171 @@
 
 ## Topology (current)
 
-**WAN → VLAN:**
+### OPNsense Network Rules by Service
 
-- UDP 51821 → wg-easy WGVLAN (192.168.X.X)
+This document lists all current OPNsense firewall rules, organized by service rather than by direction. Traffic origin and destination are described by service name and logical network (LAN, WAN, VLAN1, VLAN2) rather than by raw IP address, consistent with the anonymization already used across this repository. VLAN1 corresponds to the infrastructure VLAN (Portainer, Semaphore, Homarr, wg-easy VLAN instance, Pi-hole reverse-proxy access). VLAN2 corresponds to the Nextcloud/Immich VLAN.
 
-- TCP 80/443 → NPM (192.168.X.X)
+---
 
-**WAN → LAN:**
+#### NPM (Nginx Proxy Manager)
 
-- UDP 51823 → wg-easy WGLAN (192.168.X.X)
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| LAN → VLAN1 | Any | NPM:80 | TCP | HTTP access to the reverse proxy from the flat network |
+| LAN → VLAN1 | Any | NPM:443 | TCP | HTTPS access to the reverse proxy from the flat network |
+| WAN → VLAN1 | Any | NPM:80 | TCP | HTTP access to the reverse proxy from the public internet (Nextcloud and Immich are the only backends actually reachable from WAN) |
+| WAN → VLAN1 | Any | NPM:443 | TCP | HTTPS access to the reverse proxy from the public internet |
+| VLAN1 → LAN | NPM | Any:Any | TCP | Outbound connection from NPM to backend services on the flat network |
+| VLAN1 → LAN | NPM | Any:Any | UDP | Outbound connection from NPM to backend services on the flat network (UDP) |
+| VLAN1 → This Firewall | NPM | This Firewall:8443 | TCP | NPM proxying the OPNsense admin domain to the firewall's webUI |
+| LAN → VLAN1 | Fixed admin IP | NPM:2226 | TCP | SSH administrative access to the NPM host |
 
-**VLAN → WAN:**
+NPM Access Lists provide an additional layer on top of these firewall rules: 18 of 19 Proxy Hosts are restricted to LAN + VLAN source IPs at the application layer, regardless of what the firewall allows through. Nextcloud is the sole exception and remains fully public by design.
 
-- TCP 443 → NPM only, any destination (Let's Encrypt renewal, general HTTPS)
+---
 
-- TCP 443 → k3s (192.168.30.X) only, any destination (GitHub, needs matching k3s NetworkPolicy egress)
+#### Pi-hole
 
-**LAN → VLAN:**
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| VLAN1/VLAN2 → LAN | VLAN1 network, VLAN2 network | Pi-hole:Any | Any | Reverse-proxy path toward Pi-hole for internal domain resolution (floating rule) |
+| VLAN1 → LAN | Semaphore | Pi-hole:2235 | TCP | Semaphore management access to Pi-hole |
+| VLAN1 → LAN | Semaphore | Pi-hole:2225 | TCP | Ansible SSH access to Pi-hole |
+| VLAN1 → LAN | Portainer | Pi-hole:9001 | TCP | Portainer agent connection |
+| VLAN1 → LAN | Homarr | Pi-hole:53 | UDP | DNS query from Homarr |
+| VLAN2 → LAN | Immich | Pi-hole:53 | UDP | DNS query from Immich |
+| VLAN2 → LAN | Nextcloud | Pi-hole:53 | UDP | DNS query from Nextcloud |
+| WAN → LAN | Any | Pi-hole:51823 | UDP | WG-LAN tunnel entry point |
+| WAN → * | Pi-hole | Any:Any | UDP | WG-LAN tunnel outbound |
 
-- TCP 80/443 → NPM, any LAN source
+**Known limitation:** WGLAN clients can reach the flat network but cannot reach VLAN1 or VLAN2. The root cause lives inside the Pi-hole/wg-easy VM, not in any OPNsense rule or NAT setting (see the wg-easy service documentation for the full technical breakdown). WGLAN's scope is therefore permanently limited to the flat network; any access to VLAN1, including internal DNS resolution through Pi-hole while tunneled, requires WGVLAN instead, VLAN2 is kept isolated on purpose, without a direct access per wgvlan, the access is still possible, as the ssh connection is permitted for k3s to VLAN2.
 
-- TCP 2226 → NPM, source restricted to admin IP
+---
 
-- TCP → k3s, SSH restricted by IP to access administration
+#### Nextcloud
 
-- TCP 8443 → This Firewall, source LAN network (OPNsense webUI direct)
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| VLAN2 → * | Nextcloud | Any:443 | TCP | Outbound GitHub access |
+| VLAN1 → VLAN2 | Semaphore | Nextcloud:2235 | TCP | Semaphore management access |
+| VLAN1 → VLAN2 | Portainer | Nextcloud:9001 | TCP | Portainer agent connection |
+| VLAN1 → VLAN2 | Homarr | Nextcloud:Any | TCP | Homarr integration |
+| LAN → VLAN2 | Any | Nextcloud:2235 | TCP | Direct administrative SSH access |
+| VLAN2 → VLAN1 | Nextcloud | Keycloak:Any | Any | OAuth login flow through Keycloak |
 
-**VLAN → LAN:**
+---
 
-- NPM → LAN network, any port (see Decisions)
+#### Immich
 
-- NPM → This Firewall, TCP 8443 (covers OPNsense admin domain proxied through NPM)
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| VLAN2 → * | Immich | Any:443 | TCP | Outbound GitHub access |
+| VLAN1 → VLAN2 | Homarr | Immich:Any | TCP | Homarr integration |
+| VLAN1 → VLAN2 | Portainer | Immich:9001 | TCP | Portainer agent connection |
+| LAN → VLAN2 | Any | Immich:22 | TCP | Direct administrative SSH access |
 
-- k3s → Pi-hole, UDP 53 (DNS)
+---
 
-- k3s → Pi-hole, TCP 9001 (Portainer ↔ Agent)
+#### Wazuh
 
-- k3s → Pi-hole, TCP 2235 (Semaphore access)
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| LAN/VLAN1 → LAN | LAN network, VLAN1 network | Wazuh:443 | TCP | Dashboard access |
+| LAN/VLAN1/VLAN2 → LAN | LAN network, VLAN1 network, VLAN2 network | Wazuh:Any | TCP | Agent connections (full port range required by the Wazuh agent protocol) |
+| VLAN1 → LAN | Semaphore | Wazuh:22 | TCP | Semaphore management access |
 
-- k3s → each Proxmox node, TCP 22 (Semaphore/Ansible)
+---
 
-**VLAN → VLAN:**
+#### Semaphore / Ansible — infrastructure management matrix
 
-- Nextcloud → Keycloak, any port (Covers OAUTH Login through keycloak) 
+All entries below originate from Semaphore (VLAN1), destined to TCP port 22, unless noted otherwise.
 
-- k3s (Portainer, VLAN30) → Nextcloud VM (VLAN40), TCP 9001 (Portainer agent connection)
+| Destination | Description |
+|---|---|
+| Panel node | Semaphore-Panel |
+| Api-panel node | Semaphore-Apipanel |
+| Datacenter node | Semaphore-Datacenter |
+| Nextcloud-prim node | Semaphore-NextcloudPrim |
+| Nextcloud-sec node | Semaphore-NextcloudSec |
+| i5 node | Semaphore-I5 |
+| PBS node | Semaphore-PBS |
+| Wazuh VM | Semaphore-Wazuh |
+| pterodactyl VM | Semaphore-pterodactyl |
 
-- NPM (VLAN30) → VLAN40, any port (same broad-access pattern as NPM → LAN, see Decisions — NPM already has high blast radius, restricting by host doesn't reduce that)
+GitHub egress for automation is consolidated into a single rule regardless of which pod initiates it (Terraform, Ansible, or any other automation pod), since all k3s pods share the same node source IP after SNAT and are therefore indistinguishable to OPNsense: `VLAN1 → Any:443 TCP`. Per-pod differentiation, where needed, is enforced at the k3s NetworkPolicy layer instead.
 
-**Application layer (NPM Access Lists):**
+---
 
-- Firewall rules above control which network can reach NPM's ports. Access Lists control which source IP NPM will actually proxy to a given backend, independent of firewall — see Decisions and Issues encountered for why this layer was needed.
+#### Firewall administrative access
 
-## WGLAN
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| LAN → This Firewall | Any | This Firewall:8443 | TCP | Direct OPNsense webUI access from the flat network |
+| VLAN1 → This Firewall | NPM | This Firewall:8443 | TCP | OPNsense admin domain proxied through NPM |
 
-- Second, independent wg-easy instance, installed on the Pi-hole VM (separate from WGVLAN on the k3s VM).
+---
 
-- Grants access to the flat network (LAN, `192.168.X.X/X`) only — not VLAN.
+#### Direct administrative access (not routed through Semaphore)
 
-- WAN port UDP 51823, forwarded LAN → wg-easy on the Pi-hole VM.
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| LAN → VLAN1 | Any | k3s:22 | TCP | Direct SSH access to the k3s VM, independent of Semaphore |
 
-- Purpose: keep a way to reach the flat network by VPN even after VLAN access is fully locked down, without needing WGVLAN scope for that use case.
+---
 
-- Known issue: WGLAN clients cannot reach VLAN services (see Issues encountered) — traced to inside the Pi-hole/wg-easy VM itself, not to OPNsense firewall rules.
+#### Meteo API
+
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| VLAN1 → Meteo_API alias | Homarr (via VLAN1 node) | Meteo_API:Any | Any | External weather API consumed by the Homarr widget |
+
+**Decision:** this is the only egress rule in the infrastructure with no fixed destination IP, since the alias resolves an external FQDN rather than a static host. This was decided, because the IP of the domain changes constantly, The rule is kept as-is: OPNsense's FQDN alias narrows the actual reachable destination to the resolved IP of the weather API, and the pattern is consistent with the already-accepted GitHub egress rule.
+
+---
+
+#### SMTP (VLAN2)
+
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| VLAN2 → * | VLAN2 network | Any:587 | TCP | Outbound SMTP for Nextcloud email notifications |
+
+---
+
+#### Maintenance (floating rule)
+
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| LAN/VLAN1/VLAN2 → * | LAN, VLAN1, VLAN2 | Any:80 | TCP | apt/package repository access ("Ubuntu" rule) |
+| LAN/VLAN1/VLAN2 → * | LAN, VLAN1, VLAN2 | Any:443 | TCP | apt/package repository access ("Ubuntu" rule) |
+
+---
+
+#### WireGuard tunnels
+
+| Direction | Origin | Destination:Port | Protocol | Description |
+|---|---|---|---|---|
+| WAN → VLAN1 | Any | k3s (WGVLAN):51821 | UDP | WGVLAN tunnel entry point |
+| WAN → * | k3s (WGVLAN) | Any:Any | UDP | WGVLAN tunnel outbound |
+| WAN → LAN | Any | Pi-hole (WGLAN):51823 | UDP | WGLAN tunnel entry point |
+| WAN → * | Pi-hole (WGLAN) | Any:Any | UDP | WGLAN tunnel outbound |
+
+WGVLAN grants access to VLAN1, including internal DNS resolution through Pi-hole. WGLAN grants access to the flat network only.
+
+---
+
+#### Outbound NAT
+
+Outbound NAT mode is set to Hybrid. In addition to the automatic per-interface rules, one manual exception rule is defined:
+
+| Interface | Source | Destination | Do not NAT |
+|---|---|---|---|
+| LAN | VLAN1 network | LAN network | Yes |
+
+This rule preserves the real source IP for VLAN1-to-LAN traffic instead of translating it to OPNsense's own LAN address, consistent with the same automatic-outbound-NAT problem previously fixed for VLAN-to-flat traffic (see Decisions in the main document). It did not resolve the WGLAN-to-VLAN limitation described above.
 
 ## Decisions
 
-- Network segmentation started with a single VLAN (VLAN30, infrastructure services). A second VLAN (VLAN40) was later added to isolate Nextcloud and Immich specifically — user-facing storage services with a large blast radius (many containers, direct internet exposure for Nextcloud) — away from infrastructure-critical services like Vaultwarden and Keycloak.
+- Network segmentation started with a single VLAN (VLAN1, infrastructure services). A second VLAN (VLAN2) was later added to isolate Nextcloud and Immich specifically — user-facing storage services with a large blast radius (many containers, direct internet exposure for Nextcloud) — away from infrastructure-critical services like Vaultwarden and Keycloak.
 
 - I decided to place the reverse proxy inside the VLAN; internal DNS queries pass through Pi-hole and are forwarded to NPM, while OPNsense acts as the bridge to return the resolution to the client.
 
@@ -126,13 +224,11 @@
 
 - Admin SSH (NPM, k3s) allowed from flat network, restricted to fixed admin IP, same pattern as Portainer. Vaultwarden stays fully behind VPN at the application layer — reachable only from LAN/VLAN via NPM Access List, not from WAN under any source. Nextcloud is the only genuinely public-facing service (external family access), so it's the only one with WAN-facing rules and no NPM Access List restriction.
 
-- Outbound NAT mode changed from Automatic to Hybrid, with explicit "Do not NAT" for VLAN→flat traffic (flat-network hosts need to see the real source IP, not OPNsense's own).
-
 - Found and removed 5 SSH port-forwards on the router (unrelated to OPNsense, ~3 weeks old). Rule going forward: no administrative port ever exposed directly to the internet, only genuinely public-facing services.
 
 - NPM Access Lists reconsidered and implemented for all Proxy Hosts except Nextcloud (previously discarded as "not worth it for this project" — reversed after confirming the actual exposure, see Issues encountered). Rule of thumb going forward: any new Proxy Host defaults to an `internal-only` Access List (LAN + VLAN); Publicly Accessible is an explicit, deliberate exception, not a default.
 
-- Nextcloud and Immich were isolated in a separate VLAN in order to restrict the access tothe rest of infrastructure to avoid lateral movement to critical services.
+- Nextcloud, Immich and NPM are the only services that can be accessed from public network, NPM per firewall and Nextcloud and Immich per reverse proxy.
 
 ### Issues encountered
 
@@ -148,4 +244,4 @@
 
 - WGLAN clients cannot reach VLAN services. ICMP from inside the Pi-hole/wg-easy VM never reaches OPNsense at all (100% packet loss before the firewall), ruling out an OPNsense rule as the cause. MTU and systemd-resolved ruled out as differentiators from the working WGVLAN tunnel. Root cause not yet resolved — investigation points to something inside the Pi-hole/wg-easy VM itself, not OPNsense. Not blocking in practice: VLAN access is intentionally treated as the higher-trust tunnel (WGVLAN), while WGLAN is scoped to the flat network only.
 
-- ICMP being blocked is not the same as a service being down. During VLAN40 hardening (Nextcloud), `ping` to the VLAN gateway failed while the actual service (HTTPS via NPM) worked fine — OPNsense only had an explicit ALLOW for the service's real port, not for ICMP, since it follows the rule-by-rule hardening pattern (no ANY-ANY fallback). Lesson: when troubleshooting connectivity during hardening, test the actual service port/protocol directly (curl, telnet) instead of relying on ping — a failed ping does not confirm a broken firewall rule for the traffic that actually matters.
+- ICMP being blocked is not the same as a service being down. During VLAN2 hardening (Nextcloud), `ping` to the VLAN gateway failed while the actual service (HTTPS via NPM) worked fine — OPNsense only had an explicit ALLOW for the service's real port, not for ICMP, since it follows the rule-by-rule hardening pattern (no ANY-ANY fallback). Lesson: when troubleshooting connectivity during hardening, test the actual service port/protocol directly (curl, telnet) instead of relying on ping — a failed ping does not confirm a broken firewall rule for the traffic that actually matters.
