@@ -9,6 +9,7 @@ resource "proxmox_virtual_environment_vm" "ntopng_vm" {
     node_name = "hipervisori5"
     vm_id = 109
     full  = true
+    datastore_id = "local-zfs"
   }
 
   agent {
