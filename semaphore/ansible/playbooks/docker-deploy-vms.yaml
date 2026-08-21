@@ -3,7 +3,7 @@
   become: true                # Is the equivallent of sudo during execution of commands
 
   vars:
-    service: "wazuh"       # Is changes in each run
+    service: "ntopng"       # Is changes in each run
 
   tasks:
     - name: Update all package index
