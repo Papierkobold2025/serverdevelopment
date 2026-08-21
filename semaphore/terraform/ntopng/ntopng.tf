@@ -2,12 +2,12 @@ resource "proxmox_virtual_environment_vm" "ntopng_vm" {
   description = "Managed by Terraform"
 
   node_name = "api-panel" #Has to be identical to the name in Proxmox
-  vm_id     = 114 #ID and name have to be unique, as it will fail if it finds a duplicate in the cluster
+  vm_id     = 115 #ID and name have to be unique, as it will fail if it finds a duplicate in the cluster
   name      = "ntopng"
 
   clone {
-    node_name = "hipervisori5"
-    vm_id = 109
+    node_name = "api-panel"
+    vm_id = 114
     full  = true
     datastore_id = "local-zfs"
   }
