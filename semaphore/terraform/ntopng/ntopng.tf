@@ -21,8 +21,8 @@ resource "proxmox_virtual_environment_vm" "ntopng_vm" {
 
     ip_config {
       ipv4 {
-        address = "192.168.1.158/24" #IP address of the new VM
-        gateway = "192.168.1.1"
+        address = "192.168.X.X/24" #IP address of the new VM
+        gateway = "192.168.X.X"
       }
     }
 
@@ -114,7 +114,7 @@ variable "proxmox_api_token" {
 }
 
 provider "proxmox" {
-  endpoint  = "https://192.168.1.123:8006/" #Hipervisor where the VM will be installed
+  endpoint  = "https://192.168.X.X:8006/" #Hipervisor where the VM will be installed
   api_token = var.proxmox_api_token
   insecure  = true
 
