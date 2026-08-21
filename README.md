@@ -36,13 +36,15 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | Nextcloud | VM | [Nextcloud](docs/nextcloud.md) |
 | NPM | VM | [Nginx](docs/nginx.md) |
 | Pi-hole | VM | [Pihole](docs/pihole.md) |
-| Vaultwarden | VM | [Vaultwarden](docs/vaultwarden.md) |
+| Vaultwarden | LXC | [Vaultwarden](docs/vaultwarden.md) |
 | Keycloak | LXC | [Keycloak](docs/keycloak.md) |
 | K3s (lightweight cluster) | VM | [K3s](docs/k3s.md) — hosts Portainer, Semaphore and Homarr |
 | Netdata (New Monitoring Panel) | Panel | [Netdata](docs/netdata.md) |
 | Backups (PBS) | Dedicated VM | [cluster/backup.md](cluster/backup.md) |
 | Immich (Datacenter) | VM | [Immich](docs/immich.md) |
 | Wazuh | VM | [Wazuh](docs/wazuh.md) |
+| OPNSense | VM | [OPNSense](docs/opnsense.md) |
+| Ntopng | VM | [Ntopng](docs/ntopng.md) |
 
 ## Automation and Infrastructure as Code
 
@@ -60,6 +62,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | OPNSense | Firewall/router for the VLANs and flat network | [OPNSense](docs/opnsense.md) |
 | K3s | Firewall inside the K3s cluster | [K3s](docs/k3s.md#network-policies) |
 | wg-easy | VPN for accessing the flat network and VLANs | [wg-easy](docs/wg-easy.md) |
+| Network Diagram | Network Topology Diagram | [Network Diagram](docs/network-diagram.md) |
 
 ## Roadmap / Pending items
 
@@ -67,7 +70,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 - [ ] Configuration of firewall in Proxmox
 - [ ] Expansion of automation tasks in Semaphore, Terraform, and Linux cron jobs
 - [ ] Cloudflare Access as an extra layer for exposed services (Keycloak)
-- [ ] ntopng — visibility into network traffic
+- [x] ntopng — visibility into network traffic
 - [x] Wazuh — SIEM, centralization of security logs
 - [ ] HA / multi-node replication of k3s
 
@@ -93,4 +96,4 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 
 ---
 
-Last updated: 2026-08-08
+Last updated: 2026-08-22
