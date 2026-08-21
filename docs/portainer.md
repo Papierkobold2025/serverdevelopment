@@ -14,7 +14,7 @@
 
 - Server installation
 
-- [portainer.yaml](../k3s/manifests/deployment/automation/portainer/portainer.yaml)
+- [portainer.yaml](../k3s/manifests/deployment/automation/portainer.yaml)
 
 - Portainer Agent installation
 ```bash
