@@ -8,4 +8,4 @@
 
 ## Playbook
 
-- Configuration file at [homarr](../k3s/manifests/deployment/monitoring/homarr.yaml)
+- Configuration file at [homarr](../../k3s/manifests/deployment/monitoring/homarr.yaml)

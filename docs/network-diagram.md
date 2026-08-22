@@ -1,1 +1,0 @@
-![Homelab topology Diagram](../assets/images/network/Network-Diagram.png)

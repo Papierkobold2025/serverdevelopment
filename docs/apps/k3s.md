@@ -52,20 +52,20 @@ curl -sfL https://get.k3s.io | sh -
 
 | Service | Manifest / Installation |
 |---|---|
-| Portainer | [portainer.yaml](../k3s/manifests/deployment/automation/portainer.yaml) |
-| Semaphore | [semaphore.yaml](../k3s/manifests/deployment/automation/semaphore.yaml) |
-| Homarr | [homarr.yaml](../k3s/manifests/deployment/monitoring/homarr.yaml) |
+| Portainer | [portainer.yaml](../../k3s/manifests/deployment/automation/portainer.yaml) |
+| Semaphore | [semaphore.yaml](../../k3s/manifests/deployment/automation/semaphore.yaml) |
+| Homarr | [homarr.yaml](../../k3s/manifests/deployment/monitoring/homarr.yaml) |
 
 ### Network Policy Rules
 
 **General layer** — baseline deny-all (Ingress/Egress) and shared DNS/allow rules by namespace:
 
-- [general.yaml](../k3s/manifests/network-policies/general/general.yaml)
+- [general.yaml](../../k3s/manifests/network-policies/general/general.yaml)
 
 **Service-specific rules:**
 
 | Service | Namespace(s) | File |
 |---|---|---|
-| Portainer + Portainer-Agent | automation, portainer | [portainer-network.yaml](../k3s/manifests/network-policies/namespaces/automation/portainer/portainer-network.yaml) |
-| Semaphore | automation | [semaphore-network.yaml](../k3s/manifests/network-policies/namespaces/automation/semaphore/semaphore-network.yaml) |
-| Homarr | monitoring | [homarr-network.yaml](../k3s/manifests/network-policies/namespaces/monitoring/homarr/homarr-network.yaml) |
+| Portainer + Portainer-Agent | automation, portainer | [portainer-network.yaml](../../k3s/manifests/network-policies/namespaces/automation/portainer/portainer-network.yaml) |
+| Semaphore | automation | [semaphore-network.yaml](../../k3s/manifests/network-policies/namespaces/automation/semaphore/semaphore-network.yaml) |
+| Homarr | monitoring | [homarr-network.yaml](../../k3s/manifests/network-policies/namespaces/monitoring/homarr/homarr-network.yaml) |

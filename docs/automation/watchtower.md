@@ -1,6 +1,6 @@
 # Watchtower
 
-- Integration of Watchtower within the cluster to keep the installed Docker containers up to date.
+- Integration of Watchtower within the proxmox cluster to keep the installed Docker containers up to date.
 
 - This is a service that must be installed on each node, VM, or container that contains Docker so that automatic updates can be applied and old containers can be removed.
 

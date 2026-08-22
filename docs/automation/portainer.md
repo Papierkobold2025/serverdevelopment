@@ -8,13 +8,13 @@
 
 ## Current status
 
-- It currently manages the K3s cluster. The previous installation (Docker standalone) is documented in [Archive/Services/portainer.md](../Archive/Services/portainer.md) as a historical reference.
+- It currently manages the K3s cluster. The previous installation (Docker standalone) is documented in [Archive/Services/portainer.md](../../Archive/Services/portainer.md) as a historical reference.
 
 ## Playbook
 
 - Server installation
 
-- [portainer.yaml](../k3s/manifests/deployment/automation/portainer.yaml)
+- [portainer.yaml](../../k3s/manifests/deployment/automation/portainer.yaml)
 
 - Portainer Agent installation
 ```bash

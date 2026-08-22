@@ -12,7 +12,7 @@
 
 ## Runbook
 
-- The environment configuration is in [K3s](../k3s/manifests/deployment/automation/semaphore.yaml).
+- The environment configuration is in [K3s](../../k3s/manifests/deployment/automation/semaphore.yaml).
 
 ## Useful commands
 
@@ -43,13 +43,13 @@
 
 - I currently use Ansible to automatically update *apt* on containers, VMs, and nodes, and to install Docker Compose automatically.
 
-- The Ansible playbooks are in [ansible](../semaphore/ansible/playbooks/).
+- The Ansible playbooks are in [ansible](../../semaphore/ansible/playbooks/).
 
 ## Terraform
 
 - I chose Terraform to automatically create VMs and containers with certain specifications such as CPU, RAM, and storage.
 
-- The Terraform manifests are in [terraform](../semaphore/terraform/).
+- The Terraform manifests are in [terraform](../../semaphore/terraform/).
 
 ### Useful commands
 
