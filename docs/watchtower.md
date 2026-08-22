@@ -18,7 +18,7 @@ services:
       WATCHTOWER_NOTIFICATIONS: shoutrrr
       WATCHTOWER_NOTIFICATION_URL: '${TELEGRAM}'
       WATCHTOWER_SCHEDULE: "0 0 3 * * *"
-      WATCHTOWER_NOTIFICATION_TITLE_TAG: "ansible"
+      WATCHTOWER_NOTIFICATION_TITLE_TAG: "service"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
