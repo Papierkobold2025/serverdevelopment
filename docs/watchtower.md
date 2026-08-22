@@ -6,7 +6,7 @@
 
 ## Decisions
 
-- It will be deprecated for most of the project: k3s uses containerd by default (not Docker), and Watchtower depends on the Docker socket to function.
+- Watchtower is reinstated, as the network has a lot of dockers that need to be updated.
 
 ### Runbook
 ```bash
