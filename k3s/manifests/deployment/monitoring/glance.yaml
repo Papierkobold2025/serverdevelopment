@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: glance
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: glance
+  template:
+    metadata:
+      labels:
+        app: glance
+    spec:
+      containers:
+        - name: glance
+          image: glanceapp/glance
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: glance-config
+              mountPath: /app/config
+            - name: timezone
+              mountPath: /etc/timezone
+              readOnly: true
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: glance-config
+          hostPath:
+            path: /srv/glance/config
+        - name: timezone
+          hostPath:
+            path: /etc/timezone
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: glance-svc
+  namespace: monitoring
+spec:
+  selector:
+    app: glance
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 31640
+  type: NodePort

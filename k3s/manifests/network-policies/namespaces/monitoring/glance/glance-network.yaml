@@ -1,38 +1,37 @@
-# Semaphore Egress rules
-
-# Semaphore allow Egress
+# glance Egress
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-semaphore-egress
-  namespace: automation
+  name: allow-glance-egress
+  namespace: monitoring
 spec:
   podSelector:
     matchLabels:
-      app: semaphore
+      app: glance
   policyTypes:
     - Egress
   egress:
     - to:
         - ipBlock:
-            cidr: 192.168.X.X/24
+            cidr: 0.0.0.0/0
+      ports:
+        - protocol: TCP
+          port: 443
 
 ---
 
-# Semaphore Ingress rules
-
-# Semaphore allow Ingress
+# glance Ingress
 
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-semaphore-ingress
-  namespace: automation
+  name: allow-glance-ingress
+  namespace: monitoring
 spec:
   podSelector:
     matchLabels:
-      app: semaphore
+      app: glance
   policyTypes:
     - Ingress
   ingress:
@@ -41,11 +40,14 @@ spec:
             cidr: 192.168.X.X/24
       ports:
         - protocol: TCP
-          port: 3000
+          port: 8080
     - from:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: monitoring
           podSelector:
             matchLabels:
-              app: homepage
+              app: homarr
+      ports:
+        - protocol: TCP
+          port: 8080

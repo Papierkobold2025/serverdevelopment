@@ -39,7 +39,7 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 | Pi-hole | VM | [Pihole](docs/network/pihole.md) |
 | Vaultwarden | LXC | [Vaultwarden](docs/identity/vaultwarden.md) |
 | Keycloak | LXC | [Keycloak](docs/identity/keycloak.md) |
-| K3s (lightweight cluster) | VM | [K3s](docs/apps/k3s.md) — hosts Portainer, Semaphore and Homarr |
+| K3s (lightweight cluster) | VM | [K3s](docs/apps/k3s.md) — hosts Portainer, Semaphore, Homarr and Glance |
 | Netdata (New Monitoring Panel) | Panel | [Netdata](docs/monitoring/netdata.md) |
 | Backups (PBS) | Dedicated VM | [cluster/backup.md](cluster/backup.md) |
 | Immich (Datacenter) | VM | [Immich](docs/apps/immich.md) |
@@ -70,14 +70,13 @@ Infrastructure designed around **service isolation** to reduce the attack surfac
 - [x] Configuration of firewall in K3s
 - [ ] Configuration of firewall in Proxmox
 - [ ] Expansion of automation tasks in Semaphore, Terraform, and Linux cron jobs
-- [ ] Cloudflare Access as an extra layer for exposed services (Keycloak)
 - [x] ntopng — visibility into network traffic
 - [x] Wazuh — SIEM, centralization of security logs
-- [ ] HA / multi-node replication of k3s
 
 ## Current status / In progress
 
-> 🚧 **Network segmentation in progress.** A VLANs has been created and part of the infrastructure is being migrated; the rules in OPNSense and the DNS validations are still under development. Details and runbooks in [Network segmentation](docs/network/opnsense.md).
+> 🚧 **Monitoring and fine tuning** Currently, as the Backend and security features of the project have reached a stable point, 
+monitoring of the infrastructure with focus on network monitoring has begun. 
 
 ## Archived documentation index
 
