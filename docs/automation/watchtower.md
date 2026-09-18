@@ -8,6 +8,12 @@
 
 - Watchtower is reinstated, as the network has a lot of dockers that need to be updated.
 
+## Issues encountered
+
+- Watchtower updates the docker compose images, but doesn't clean them up automatically unless ```bash WATCHTOWER_CLEANUP: "true"``` is set as an environment variable
+
+- All docker compose images where cleansed and variable was integrated in the runbook.
+
 ### Runbook
 ```bash
 services:
@@ -19,6 +25,7 @@ services:
       WATCHTOWER_NOTIFICATION_URL: '${TELEGRAM}'
       WATCHTOWER_SCHEDULE: "0 0 3 * * *"
       WATCHTOWER_NOTIFICATION_TITLE_TAG: "service"
+      WATCHTOWER_CLEANUP: "true"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
