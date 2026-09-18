@@ -6,7 +6,6 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **CPU(s)**: 4 x Intel Core i7-7567U @ 3.50GHz (1 Socket)
 - **Total RAM**: 62.69 GiB
 - **Total storage**: 1.69 TiB
-- **Kernel**: 7.0.2-6-pve
 - **Manager**: pve-manager/9.2.2
 - **Boot Mode**: EFI
 
@@ -14,7 +13,6 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **CPU(s)**: 4 x Intel Core i7-7567U @ 3.50GHz (1 Socket)
 - **Total RAM**: 62.68 GiB
 - **Total storage**: 1.26 TiB
-- **Kernel**: 7.0.2-6-pve
 - **Manager**: pve-manager/9.2.4
 - **Boot Mode**: EFI
 
@@ -22,7 +20,6 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **CPU(s)**: 4 x Intel Core i7-7567U @ 3.50GHz (1 Socket)
 - **Total RAM**: 62.68 GiB
 - **Total storage**: 1.28 TiB
-- **Kernel**: 7.0.2-6-pve
 - **Manager**: pve-manager/9.2.4
 - **Boot Mode**: EFI
 
@@ -30,7 +27,6 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **CPU(s)**: 16 x Intel Core i7-13620H, 13th Gen (1 Socket)
 - **Total RAM**: 62.44 GiB
 - **Total storage**: 1.71 TiB
-- **Kernel**: 7.0.2-6-pve
 - **Manager**: pve-manager/9.2.2
 - **Boot Mode**: EFI
 
@@ -38,7 +34,6 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **CPU(s)**: 4 x Intel Core i5-7260U @ 2.20GHz (1 Socket)
 - **Total RAM**: 46.94 GiB
 - **Total storage**: 1.37 TiB
-- **Kernel**: 7.0.14-8-pve
 - **Manager**: pve-manager/9.2.6
 - **Boot Mode**: EFI
 
@@ -46,7 +41,6 @@ Hardware specs for each physical node, without IP addresses (internal documentat
 - **CPU(s)**: 8 x Intel(R) Core(TM) i7-8559U @ 2.70GHz (1 Socket)
 - **Total RAM**: 46.94 GiB
 - **Total storage**: 2.71 TiB
-- **Kernel**: 7.0.2-6-pve
 - **Manager**: pve-manager/9.2.2
 - **Boot Mode**: EFI
 
