@@ -19,6 +19,7 @@
       ansible.builtin.stat:
         path: /var/run/reboot-required
       register: reboot_required
+      
     - name: Sincronizar bootloader con los kernels instalados
       ansible.builtin.command:
         cmd: proxmox-boot-tool refresh
