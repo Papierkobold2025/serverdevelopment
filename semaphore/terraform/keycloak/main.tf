@@ -12,6 +12,9 @@ resource "proxmox_virtual_environment_container" "ubuntu_container" {
 
   initialization {
     hostname = "keycloak"
+    dns {
+      servers = ["192.168.X.X"]
+    }
 
     ip_config {
       ipv4 {
