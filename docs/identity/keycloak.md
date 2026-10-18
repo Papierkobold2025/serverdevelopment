@@ -37,8 +37,8 @@ services:
       KC_HEALTH_ENABLED: "true"
       KC_METRICS_ENABLED: "true"
     ports:
-      - "192.168.1.124:8080:8080"
-      - "192.168.1.124:9000:9000"
+      - "192.168.X.X8080:8080"
+      - "192.168.X.X:9000:9000"
     mem_limit: 2g
     volumes:
       - keycloak-import:/opt/keycloak/data/import
