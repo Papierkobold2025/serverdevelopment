@@ -8,7 +8,7 @@
 
 - A Homelab realm was created to separate the administration panel from normal users.
 
-- Update of Keycloak from version 26.5.6 to 26.7.2 because of known CVE-2026-18963 that exploits a password reset vulnerability.
+- New Update from 26.7.2 to 26.7.4 because of vulnerabilities found in six different CVEs.
 
 ### Issues encountered
 
@@ -19,7 +19,7 @@
 ```bash
 services:
   keycloak:
-    image: quay.io/keycloak/keycloak:26.7.2
+    image: quay.io/keycloak/keycloak:26.7.4
     container_name: keycloak
     restart: unless-stopped
     command: start
